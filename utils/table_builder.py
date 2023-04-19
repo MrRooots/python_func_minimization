@@ -2,11 +2,12 @@ import matplotlib.pyplot as plt
 import matplotlib as mplt
 import pandas
 
-HEADERS = ('Iterations', 'Limit Reached', 'Minimum', 'Point')
+HEADERS = ('Iterations limit', 'Iterations', 'Minimum', 'Point')
+Data = list[int, str, float, tuple[float, float]]
 
 
 class TableBuilder:
-  _data: list[list[int, bool, float, tuple[float, float]]] = []
+  _data: list[Data] = []
 
   @staticmethod
   def _color_last_row(table: mplt.table.Table,
@@ -17,7 +18,7 @@ class TableBuilder:
     for i in range(len(df.columns)):
       table.get_celld()[rows, i].set_facecolor('#a1c935')
 
-  def add_data(self, data: list[int | str, bool, float, tuple[float, float]]) -> None:
+  def add_data(self, data: Data) -> None:
     self._data.append(data)
 
   def build_table(self, headers: tuple[str, ...] = HEADERS) -> None:

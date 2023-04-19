@@ -19,17 +19,16 @@ from utils.solver import Solver
 
 
 def main():
-  # Initial values of k and alpha is stringly paired with initial point (x0, y0)
-  x0, y0 = 2, 2
-  k, alpha, precision = 2.1, 1.15, 1e-8
+  x0, y0 = 1, 2.5
+  k, alpha, precision = 1, 0, 1e-7
 
-  max_iterations = (10, 100, 500)  # , 1_000, 10_000, 50_000)
+  max_iterations = (25, 30, 35, 50)
   solver = Solver(x0, y0, k, alpha, precision)
 
   for max_iteration in max_iterations:
     solver.find_solution(max_iteration)
 
-  solver.generate_report()
+  solver.generate_report(graph=True)
 
 
 if __name__ == '__main__':
