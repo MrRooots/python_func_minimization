@@ -38,9 +38,9 @@ class Solver:
 
     self.table_builder.add_data([
       max_iteration,
-      limit,
+      'overflowed' if limit is True else limit,
       round(f(x, y), 5),
-      (round(x, 5), round(y, 2))
+      (round(x, 5), round(y, 5))
     ])
 
   def generate_report(self,
