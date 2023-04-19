@@ -28,13 +28,13 @@ class DichotomyMethod(CalculationMethod):
     a, b = 0, alpha
 
     while b - a > precision:
-      c = (a + b) / 2
+      c = (a + b) / 2.0
 
       f_0, f_1 = [f(x - i * dx, y - i * dy, k) for i in (a, c)]
 
       a, b = (a, c) if f_0 * f_1 < 0 else (c, b)
 
-    return (a + b) / 2
+    return (a + b) / 2.0
 
 
 class SteepestDescendMethod(CalculationMethod):
@@ -55,24 +55,30 @@ class SteepestDescendMethod(CalculationMethod):
 
     while i <= max_iteration:
       i += 1
+      step = .00001
       grad_x, grad_y = gradient(x, y, k)
       g_norm = math.sqrt(grad_x ** 2 + grad_y ** 2)
+      grad_x, grad_y = grad_x / g_norm, grad_y / g_norm
+
+      changed = False
+      while 0 <= x - alpha * grad_x <= 4 and 0 <= y - alpha * grad_y <= 4:
+        alpha += step
+        changed = True
+
       alpha = DichotomyMethod.calculate(f,
                                         (x, y),
                                         (grad_x, grad_y),
                                         k,
-                                        alpha,
+                                        alpha if not changed else alpha - step,
                                         precision)
 
-      x_new, y_new = x - alpha * (grad_x / g_norm), \
-                     y - alpha * (grad_y / g_norm)
+      x_new, y_new = x - alpha * grad_x, y - alpha * grad_y
 
-      if g_norm < precision:
-        print(f'Normalized gradient')
-        return x, y, False if i == max_iteration else i
-      elif 0 <= x_new <= 4 and 0 <= y_new <= 4:
-        x, y = x_new, y_new
-      else:
-        k *= 2
+      if math.fabs(f(x, y, k) - f(x_new, y_new, k)) < precision:
+        return x_new, y_new, False if i == max_iteration else i
+
+      x, y = x_new, y_new
+      k *= 2
+      alpha = 0
 
     return x, y, True
